@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: amazon-app-deployment
+spec:
+  replicas: 3  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: Amazon-app
+  template:
+    metadata:
+      labels:
+        app: Amazon-app
+    spec:
+      containers:
+        - name: Amazon
+          image: mradulsingh25/Amazon-app:latest  # Use your actual Docker image name and tag
+          ports:
+            - containerPort: 3000  # The port your React app is listening on
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: amazon-app-service
+spec:
+  selector:
+    app: Amazon-app
+  ports:
+    - protocol: TCP
+      port: 80  # The port exposed by the service within the cluster
+      targetPort: 3000  # The port your React app is listening on inside the pod
+  type: LoadBalancer
